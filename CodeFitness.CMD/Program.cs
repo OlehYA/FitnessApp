@@ -20,7 +20,7 @@ namespace CodeFitness.CMD
             var userController = new UserController(name);
             if (userController.ISNewUser)
             {
-                Console.Write("Write the gender");
+                Console.Write("Write the gender: ");
                 var gender = Console.ReadLine();
                 var birthDate = ParseDateTime();
                 var weight = ParseDouble("weight");
