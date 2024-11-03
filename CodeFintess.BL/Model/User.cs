@@ -17,12 +17,12 @@ namespace CodeFintess.BL.Model
         /// <summary>
         /// Gender
         /// </summary>
-        public Gender Gender { get; }
+        public Gender Gender { get; set; }
 
         /// <summary>
         /// BirthDate
         /// </summary>
-        public DateTime BirthDate { get; }
+        public DateTime BirthDate { get; set; }
 
         /// <summary>
         /// Weight
@@ -33,6 +33,9 @@ namespace CodeFintess.BL.Model
         /// Height
         /// </summary>
         public double Height { get; set; }
+
+        public int Age { get { return DateTime.Now.Year - BirthDate.Year; } }
+
         #endregion
 
         /// <summary>
@@ -86,10 +89,18 @@ namespace CodeFintess.BL.Model
 
         }
 
-        public override string ToString()
+        public User(string name)
         {
-            return Name;
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("Name cannot be empty or null.", nameof(name));
+            }
+            Name = name;
         }
 
+        public override string ToString()
+        {
+            return Name + " " + Age;
+        }
     }
 }

@@ -17,24 +17,55 @@ namespace CodeFitness.CMD
             Console.WriteLine("Enter the user name.");
             var name = Console.ReadLine();
 
-            Console.WriteLine("Enter gender");
-            var gender = Console.ReadLine();
+            var userController = new UserController(name);
+            if (userController.ISNewUser)
+            {
+                Console.Write("Write the gender");
+                var gender = Console.ReadLine();
+                var birthDate = ParseDateTime();
+                var weight = ParseDouble("weight");
+                var height = ParseDouble("height");
 
-            Console.WriteLine("Enter date of birth");
-            var birthdate = DateTime.Parse(Console.ReadLine()); //TODO: re
+                userController.SetNewUserData(gender, birthDate, weight, height);
+            }
 
-            Console.WriteLine("Enter weight");
-            var weight = double.Parse(Console.ReadLine());
+            Console.WriteLine(userController.CurrentUser);
+            Console.ReadLine();
+        }
+        private static DateTime ParseDateTime()
+        {
+            DateTime birthDate;
+            while (true)
+            {
+                Console.Write("Enter your date of birth (dd.mm.yyyy): ");
+                if (DateTime.TryParse(Console.ReadLine(), out birthDate))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong date format birth day");
+                }
+            }
 
-            Console.WriteLine("Enter height");
-            var height = double.Parse(Console.ReadLine());
+            return birthDate;
 
-            var userController = new UserController(name, gender, birthdate, weight, height);
-            userController.Save();
+        }
 
-
-
-
+        private static double ParseDouble(string name)
+        {
+            while (true)
+            {
+                Console.Write($"Enter your {name}: ");
+                if (double.TryParse(Console.ReadLine(), out double value))
+                {
+                    return value;
+                }
+                else
+                {
+                    Console.WriteLine($"Wrong format {name}");
+                }
+            }
         }
     }
 }

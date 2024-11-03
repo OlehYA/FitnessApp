@@ -18,37 +18,66 @@ namespace CodeFintess.BL.Controller
         /// <summary>
         /// Users app
         /// </summary>
-        public User User { get; }
+        public List<User> Users { get; }
+        public User CurrentUser { get; }
+        public bool ISNewUser { get; } = false;
 
         /// <summary>
         /// Created new controller users
         /// </summary>
         /// <param name="user"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public UserController(string userName, string genderName, DateTime birdthDay, double weight, double height)
+        public UserController(string userName)
         {
-            //TODO: Check
+            if(string .IsNullOrWhiteSpace(userName))
+            {
+                throw new ArgumentNullException("The username cannot be empty", nameof(userName));
+            }
 
-            var gender = new Gender(genderName);
-            User = new User(userName, gender, birdthDay, weight, height);
+            Users = GetUsersData(); ;
+
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName); 
+
+            if(CurrentUser == null) 
+            {
+                CurrentUser = new User(userName);
+                Users.Add(CurrentUser);
+                ISNewUser = true;
+                Save();
+            }
+
         }
 
         /// <summary>
-        /// Load data users
+        /// Get list users
         /// </summary>
-        /// <returns>Users app</returns>
-        /// <exception cref="FileLoadException"></exception>
-        public UserController()
+        /// <returns></returns>
+        private List<User> GetUsersData()
         {
             var formatter = new BinaryFormatter();
+
             using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                if (formatter.Deserialize(fs) is User user)
+                if (formatter.Deserialize(fs) is List<User> users)
                 {
-                    User = user;
+                    return users;
                 }
-                //TODO: What work if users not reading
+                else
+                {
+                    return new List<User>();
+                }
             }
+        }
+
+        public void SetNewUserData(string genderName, DateTime birtDate, double weight = 1, double height = 1)
+        {
+          //Check
+          
+            CurrentUser.Gender = new Gender(genderName);
+            CurrentUser.BirthDate = birtDate;
+            CurrentUser.Weight = weight;
+            CurrentUser.Height = height;
+            Save();
         }
 
         /// <summary>
@@ -60,7 +89,7 @@ namespace CodeFintess.BL.Controller
 
             using(var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
             {
-                formatter.Serialize(fs, User);
+                formatter.Serialize(fs, Users);
             }
         }
     }
