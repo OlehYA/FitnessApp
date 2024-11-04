@@ -12,8 +12,9 @@ namespace CodeFintess.BL.Controller
     /// <summary>
     /// Controller Users
     /// </summary>
-    public class UserController
+    public class UserController : ControllerBase
     {
+        private const string USER_FILE_NAME = "users.dat";
 
         /// <summary>
         /// Users app
@@ -29,16 +30,16 @@ namespace CodeFintess.BL.Controller
         /// <exception cref="ArgumentNullException"></exception>
         public UserController(string userName)
         {
-            if(string .IsNullOrWhiteSpace(userName))
+            if (string.IsNullOrWhiteSpace(userName))
             {
                 throw new ArgumentNullException("The username cannot be empty", nameof(userName));
             }
 
             Users = GetUsersData(); ;
 
-            CurrentUser = Users.SingleOrDefault(u => u.Name == userName); 
+            CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
 
-            if(CurrentUser == null) 
+            if (CurrentUser == null)
             {
                 CurrentUser = new User(userName);
                 Users.Add(CurrentUser);
@@ -54,25 +55,13 @@ namespace CodeFintess.BL.Controller
         /// <returns></returns>
         private List<User> GetUsersData()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (fs.Length> 0 && formatter.Deserialize(fs) is List<User> users)
-                {
-                    return users;
-                }
-                else
-                {
-                    return new List<User>();
-                }
-            }
+           return Load<List<User>>(USER_FILE_NAME) ?? new List<User>();
         }
 
         public void SetNewUserData(string genderName, DateTime birtDate, double weight = 1, double height = 1)
         {
-          //Check
-          
+            //Check
+
             CurrentUser.Gender = new Gender(genderName);
             CurrentUser.BirthDate = birtDate;
             CurrentUser.Weight = weight;
@@ -85,12 +74,7 @@ namespace CodeFintess.BL.Controller
         /// </summary>
         public void Save()
         {
-            var formatter = new BinaryFormatter();
-
-            using(var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, Users);
-            }
+            Save(USER_FILE_NAME, Users);
         }
     }
 }
