@@ -18,19 +18,20 @@ namespace CodeFitness.CMD
             var culture = CultureInfo.CreateSpecificCulture("ua-ua");
             var resourceManager = new ResourceManager("CodeFitness.CMD.Languages.Messages", typeof(Program).Assembly);
 
-            Console.WriteLine(resourceManager.GetString("Hello",culture));
+            Console.WriteLine(resourceManager.GetString("Hello", culture));
 
-            Console.WriteLine(resourceManager.GetString("EnterN",culture));
+            Console.WriteLine(resourceManager.GetString("EnterN", culture));
             var name = Console.ReadLine();
 
             var userController = new UserController(name);
             var eatingController = new EatingController(userController.CurrentUser);
+            var exerciseController = new ExerciseController(userController.CurrentUser);
 
             if (userController.ISNewUser)
             {
                 Console.Write("Write the gender: ");
                 var gender = Console.ReadLine();
-                var birthDate = ParseDateTime();
+                var birthDate = ParseDateTime("date of birthday");
                 var weight = ParseDouble("weight");
                 var height = ParseDouble("height");
 
@@ -39,26 +40,60 @@ namespace CodeFitness.CMD
 
             Console.WriteLine(userController.CurrentUser);
 
-            Console.WriteLine("What do you want to do?");
-            Console.WriteLine("E - to take a meal");
-            var key = Console.ReadKey();
-            Console.WriteLine();
-
-            if (key.Key == ConsoleKey.E)
+            while (true)
             {
-                var foods = EnterEating();
-                eatingController.Add(foods.Food, foods.Weight);
+                Console.WriteLine("What do you want to do?");
+                Console.WriteLine("E - to take a meal");
+                Console.WriteLine("A - enter exercis");
+                Console.WriteLine("Q - EXIT");
+                var key = Console.ReadKey();
+                Console.WriteLine();
 
-                foreach(var item in eatingController.Eating.Foods)
+                switch (key.Key)
                 {
-                    Console.WriteLine($"\t{item.Key} - {item.Value}");
-                }
-            }
+                    case ConsoleKey.E:
+                        var foods = EnterEating();
+                        eatingController.Add(foods.Food, foods.Weight);
 
-            Console.ReadLine();
+                        foreach (var item in eatingController.Eating.Foods)
+                        {
+                            Console.WriteLine($"\t{item.Key} - {item.Value}");
+                        }
+                        break;
+                    case ConsoleKey.A:
+                        var  exe = EnterExercise();
+                        exerciseController.Add(exe.Activity, exe.Beging, exe.End);
+
+                        foreach(var item in exerciseController.Exercises)
+                        {
+                            Console.WriteLine($"\t{item.Activity} z {item.Start.ToShortTimeString()} and {item.Finish.ToShortTimeString()}");
+                        }
+
+                        break;
+                    case ConsoleKey.Q:
+                        Environment.Exit(0);
+                        break;
+                }
+
+                Console.ReadLine();
+            }
         }
 
-        private static (Food Food,double Weight)  EnterEating()
+        private static (DateTime Beging, DateTime End, Activity Activity) EnterExercise()
+        {
+            Console.Write("Writte name exercise: ");
+            var name = Console.ReadLine();
+
+            var energy = ParseDouble("Energy consumption per minute");
+
+            var begin = ParseDateTime("Start exercise");
+            var end = ParseDateTime("Finish exercise");
+
+            var activity = new Activity(name, energy);
+            return (begin, end, activity);
+        }
+
+        private static (Food Food, double Weight) EnterEating()
         {
             Console.Write("Enter the product name: ");
             var food = Console.ReadLine();
@@ -67,27 +102,27 @@ namespace CodeFitness.CMD
             var prot = ParseDouble("Proteina");
             var fats = ParseDouble("Fats");
             var carbs = ParseDouble("Carbohydrates");
-                 
+
             var weight = ParseDouble("weight of the product: ");
-            var product = new Food(food, calories, prot, fats,carbs);
-               
+            var product = new Food(food, calories, prot, fats, carbs);
+
             return (Food: product, Weight: weight);
-            
+
         }
 
-        private static DateTime ParseDateTime()
+        private static DateTime ParseDateTime(string value)
         {
             DateTime birthDate;
             while (true)
             {
-                Console.Write("Enter your date of birth (dd.mm.yyyy): ");
+                Console.Write($"Enter {value} (dd.mm.yyyy): ");
                 if (DateTime.TryParse(Console.ReadLine(), out birthDate))
                 {
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("Wrong date format birth day");
+                    Console.WriteLine($"Wrong date format {value}");
                 }
             }
 

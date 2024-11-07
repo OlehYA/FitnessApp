@@ -10,21 +10,23 @@ using CodeFintess.BL.Model;
 namespace CodeFintess.BL.Controller.Tests
 {
     [TestClass()]
-    public class EatingControllerTests
+    public class ExerciseControllerTests
     {
         [TestMethod()]
         public void AddTest()
         {
             var userNmae = Guid.NewGuid().ToString();
-            var foodName = Guid.NewGuid().ToString();
+            var activityName = Guid.NewGuid().ToString();
             var rnd = new Random();
             var userController = new UserController(userNmae);
-            var eatingController = new EatingController(userController.CurrentUser);
-            var food = new Food(foodName, rnd.Next(50, 500), rnd.Next(50, 500), rnd.Next(50, 500), rnd.Next(50, 500));
+            var exerciseController = new ExerciseController(userController.CurrentUser);
+            var activity = new Activity(activityName, rnd.Next(10, 50));
 
-            eatingController.Add(food, 100);
 
-            Assert.AreEqual(food.Name, eatingController.Eating.Foods.First().Key.Name);
+
+            exerciseController.Add(activity, DateTime.Now, DateTime.Now.AddHours(1));
+
+            Assert.AreEqual(activityName, exerciseController.Activities.First().Name);
         }
     }
 }
