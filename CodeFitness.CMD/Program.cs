@@ -2,8 +2,10 @@
 using CodeFintess.BL.Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,9 +15,12 @@ namespace CodeFitness.CMD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the arm fitness program!");
+            var culture = CultureInfo.CreateSpecificCulture("ua-ua");
+            var resourceManager = new ResourceManager("CodeFitness.CMD.Languages.Messages", typeof(Program).Assembly);
 
-            Console.WriteLine("Enter the user name.");
+            Console.WriteLine(resourceManager.GetString("Hello",culture));
+
+            Console.WriteLine(resourceManager.GetString("EnterN",culture));
             var name = Console.ReadLine();
 
             var userController = new UserController(name);
