@@ -15,16 +15,19 @@ namespace CodeFintess.BL.Controller.Tests
         [TestMethod()]
         public void AddTest()
         {
-            var userNmae = Guid.NewGuid().ToString();
+            // Arrange
+            var userName = Guid.NewGuid().ToString();
             var foodName = Guid.NewGuid().ToString();
             var rnd = new Random();
-            var userController = new UserController(userNmae);
-            var eatingController = new EatingController(userController.CurrentUser);
+            var userController = new UserController(userName);
+            var eatingConroller = new EatingController(userController.CurrentUser);
             var food = new Food(foodName, rnd.Next(50, 500), rnd.Next(50, 500), rnd.Next(50, 500), rnd.Next(50, 500));
 
-            eatingController.Add(food, 100);
+            // Act
+            eatingConroller.Add(food, 100);
 
-            Assert.AreEqual(food.Name, eatingController.Eating.Foods.First().Key.Name);
+            // Assert
+            Assert.AreEqual(food.Name, eatingConroller.Eating.Foods.First().Key.Name);
         }
     }
 }

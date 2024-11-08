@@ -14,13 +14,13 @@ namespace CodeFintess.BL.Controller
     /// </summary>
     public class UserController : ControllerBase
     {
-        private const string USER_FILE_NAME = "users.dat";
-
         /// <summary>
         /// Users app
         /// </summary>
         public List<User> Users { get; }
+
         public User CurrentUser { get; }
+
         public bool ISNewUser { get; } = false;
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace CodeFintess.BL.Controller
                 throw new ArgumentNullException("The username cannot be empty", nameof(userName));
             }
 
-            Users = GetUsersData(); ;
+            Users = GetUsersData(); 
 
             CurrentUser = Users.SingleOrDefault(u => u.Name == userName);
 
@@ -44,7 +44,6 @@ namespace CodeFintess.BL.Controller
                 CurrentUser = new User(userName);
                 Users.Add(CurrentUser);
                 ISNewUser = true;
-                Save();
             }
 
         }
@@ -55,7 +54,7 @@ namespace CodeFintess.BL.Controller
         /// <returns></returns>
         private List<User> GetUsersData()
         {
-           return Load<List<User>>(USER_FILE_NAME) ?? new List<User>();
+            return Load<User>() ?? new List<User>();
         }
 
         public void SetNewUserData(string genderName, DateTime birtDate, double weight = 1, double height = 1)
@@ -74,7 +73,7 @@ namespace CodeFintess.BL.Controller
         /// </summary>
         public void Save()
         {
-            Save(USER_FILE_NAME, Users);
+            Save(Users);
         }
     }
 }

@@ -9,29 +9,34 @@ namespace CodeFintess.BL.Model
     [Serializable]
     public class Food
     {
-        public string Name { get; }
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public double Callories { get; set; }
 
         /// <summary>
         /// Proteins
         /// </summary>
-        public double Proteins { get; }
+        public double Proteins { get; set; }
 
         /// <summary>
         /// Fats
         /// </summary>
-        public double Fats { get; }
+        public double Fats { get; set; }
 
         /// <summary>
         /// Vyglevods
         /// </summary>
-        public double Carbohydrates { get; }
+        public double Carbohydrates { get; set; }
 
-        /// <summary>
-        /// Caloris
-        /// </summary>
-        public double Calories { get; }
+        public double Calories { get; set; }
 
-        public Food(string name) : this(name, 0, 0, 0, 0){ }
+        public virtual ICollection<Eating> Eatings { get; set; }
+
+        public Food() { }
+
+        public Food(string name) : this(name, 0, 0, 0, 0) { }
 
         public Food(string name, double calories, double proteins, double fats, double carbohydrates)
         {

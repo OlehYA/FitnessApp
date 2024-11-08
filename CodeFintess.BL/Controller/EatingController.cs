@@ -11,11 +11,7 @@ namespace CodeFintess.BL.Controller
 {
     public class EatingController : ControllerBase
     {
-        private const string EATINGS_FILE_NAME = "eatings.dat";
-        private const string FOODS_FILE_NAME = "foods.dat";
         private readonly User user;
-
-
         public List<Food> Foods { get; }
         public Eating Eating { get; }
 
@@ -44,18 +40,18 @@ namespace CodeFintess.BL.Controller
 
         private Eating GetEating()
         {
-            return Load<Eating>(EATINGS_FILE_NAME) ?? new Eating(user);
+            return Load<Eating>().FirstOrDefault() ?? new Eating(user);
         }
 
         private List<Food> GetAllFoods()
         {
-            return Load<List<Food>>(FOODS_FILE_NAME) ?? new List<Food>();
+            return Load<Food>() ?? new List<Food>();
         }
 
         private void Save()
         {
-            Save(FOODS_FILE_NAME, Foods);
-            Save(EATINGS_FILE_NAME, Eating);
+            Save(Foods);
+            Save(new List<Eating>() { Eating });
         }
     }
 }
